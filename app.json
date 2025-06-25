@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Shoes App",
+    "slug": "ecommerce-app-ui",
+    "version": "1.0.0",
+
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+
+    "experiments": {
+      "tsconfigPaths": true
+    },
+
+    "plugins": [],
+
+    "orientation": "portrait",
+    "icon": "./assets/icon.jpg",
+
+    "userInterfaceStyle": "light",
+
+    "splash": {
+      "image": "./assets/icon.jpg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.jpg",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "newArchEnabled": true
+  }
+}
