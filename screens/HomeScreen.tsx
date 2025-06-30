@@ -1,5 +1,6 @@
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import useAuth from 'auth/useAuth';
 import CategoryItem from 'components/CategoryItem';
 import ImageSlideShow from 'components/ImageSlideShow';
 import ProductCard from 'components/ProductCard';
@@ -8,7 +9,7 @@ import SearchBar from 'components/SearchBar';
 import Typo from 'components/Typo';
 import colors from 'config/colors';
 import { radius, spacingX, spacingY } from 'config/spacing';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { products, categories, categories2 } from 'utils/data';
@@ -18,12 +19,16 @@ function HomeScreen({ navigation }:any) {
   const [selected, setSelected] = useState('All');
   const [data, setData] = useState(products);
   const [key, setKey] = useState(0);
-
+  const {user} = useAuth();
   // useFocusEffect(
   //   useCallback(() => {
   //     setKey((prevKey) => prevKey + 1);
   //   }, [])
   // );
+
+  // useEffect(() => {
+  //    console.log("User data:", user);
+  // }, []);
   
   const handleFilter = (category: any) => {
     setSelected(category);

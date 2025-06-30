@@ -7,6 +7,7 @@ import {
   Platform,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
 import colors from 'config/colors';
@@ -16,18 +17,63 @@ import Typo from 'components/Typo';
 import { normalizeY } from 'utils/normalize';
 import { Octicons } from '@expo/vector-icons';
 import AppButton from 'components/AppButton';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp  } from '@react-navigation/native';
 import useAuth from 'auth/useAuth';
+import { authClient } from 'lib/auth-client';
+import { RootStackParamList } from 'utils/types';
 const { width, height } = Dimensions.get('screen');
 let paddingTop = Platform.OS === 'ios' ? height * 0.07 : spacingY._10;
 
+type MyScreenNavigationProp = NavigationProp<RootStackParamList>; // Example for a screen within the RootStack
+
 function RegisterScreen() {
-  const navigation = useNavigation();
-  const Auth = useAuth();
+  const navigation = useNavigation<MyScreenNavigationProp>();
+  const {setUser} = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSecure, setIsSecure] = useState(true);
+
+  const handleSignup = async () => {
+    try {
+      if (!name || !email || !password) {
+        Alert.alert('All fields are required');
+        return;
+      }
+      
+       const respond = await authClient.signUp.email({
+                name,
+                email,
+                password,
+              })
+      console.log("respond.data:", respond.data);        
+      if (respond.error) {
+        Alert.alert(respond.error?.message || 'Signup failed');
+        return;
+      }
+      
+      // setUser({ name, email, password });        
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error('Signup error:', error);
+    }
+  };
+
+  const Icon = ({ icon, account }: any) => {
+    return (
+        <TouchableOpacity onPress={() => handleSocialSignup(account)}  style={styles.iconBg}>
+          <Image source={icon} style={styles.icon} />
+        </TouchableOpacity>
+      );
+  };
+
+  const handleSocialSignup = async (provider: string) => {
+        await authClient.signIn.social({
+            provider,
+            callbackURL: "Home" // this will be converted to a deep link (eg. `myapp://dashboard`) on native
+        })   
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.background}>
@@ -82,7 +128,8 @@ function RegisterScreen() {
           )}
         </View>
         <AppButton
-          onPress={() => Auth.setUser('123')}
+          onPress={() => handleSignup()}
+          // disabled={!name || !email || !password}
           label={'Register'}
           style={{
             backgroundColor: colors.primary,
@@ -96,9 +143,9 @@ function RegisterScreen() {
           <View style={styles.line} />
         </View>
         <View style={[styles.orContinueRow, { width: '85%', gap: spacingX._15 }]}>
-          <Icon icon={require('../assets/google.png')} />
-          <Icon icon={require('../assets/apple.png')} />
-          <Icon icon={require('../assets/facebook.png')} />
+          <Icon icon={require('../assets/google.png')} account={'google'} />
+          <Icon icon={require('../assets/apple.png')} account={'apple'} />
+          <Icon icon={require('../assets/facebook.png')} account={'facebook'} />
         </View>
         <TouchableOpacity
           style={[styles.orContinueRow, { gap: spacingX._5, marginTop: '15%' }]}
@@ -111,13 +158,7 @@ function RegisterScreen() {
   );
 }
 
-const Icon = ({ icon }: any) => {
-  return (
-    <TouchableOpacity style={styles.iconBg}>
-      <Image source={icon} style={styles.icon} />
-    </TouchableOpacity>
-  );
-};
+
 
 const styles = StyleSheet.create({
   container: {

@@ -5,18 +5,14 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, Image, View, StyleSheet, TouchableOpacity } from 'react-native';
 import Typo from './Typo';
 import { normalizeX, normalizeY } from 'utils/normalize';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 const { width, height } = Dimensions.get('screen');
+import { ProductItem, RootStackParamList } from 'utils/types';
 
-
-interface ProductItem {
-  url: string;
-  name: string;
-  price: string;
-}
+type MyScreenNavigationProp = NavigationProp<RootStackParamList>; // Example for a screen within the RootStack
 
 function ProductCard({ item }: { item: ProductItem }) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<MyScreenNavigationProp>();
   const [rating, setRating] = useState(1)
 
   function getRandom () {
@@ -35,7 +31,7 @@ function ProductCard({ item }: { item: ProductItem }) {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => navigation.navigate('ItemDetails', item)}>
+      onPress={() => navigation.navigate({ name: 'ItemDetails', params: item  })}>
       <Image source={item.url || require('../assets/image-placeholder.jpg')} style={styles.img}  />
       <Typo size={13} style={styles.name}>
         {item.name}
