@@ -7,6 +7,7 @@ import {
   Platform,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
 import colors from 'config/colors';
@@ -16,17 +17,73 @@ import Typo from 'components/Typo';
 import { normalizeY } from 'utils/normalize';
 import { Octicons } from '@expo/vector-icons';
 import AppButton from 'components/AppButton';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import useAuth from 'auth/useAuth';
+import { authClient } from 'lib/auth-client';
+import { RootStackParamList } from 'utils/types';
 const { width, height } = Dimensions.get('screen');
 let paddingTop = Platform.OS === 'ios' ? height * 0.07 : spacingY._10;
 
+type MyScreenNavigationProp = NavigationProp<RootStackParamList>; // Example for a screen within the RootStack
+
 function SigninScreen() {
-  const Auth = useAuth();
-  const navigation = useNavigation();
+  const {user, setUser} = useAuth();
+  const navigation = useNavigation<MyScreenNavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSecure, setIsSecure] = useState(true);
+
+  const handleSubmit = async () => {
+    if (!email) {
+      alert('Please enter your email');
+      return;
+    }
+
+    if (!password) {
+      alert('Please enter your password');
+      return;
+    }
+
+    try {
+      const respond = await authClient.signIn.email({
+            email,
+            password,
+        })
+      
+       console.log("respond.data:", respond.data);
+      if (respond.error) {       
+        alert(respond.error.message);
+        return;
+      } else {
+        setUser(respond.data.user);
+        // Auth.setUser(respond.user.id);
+        // navigation.navigate('TabNavigator');
+      }
+
+       
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+      throw error;
+    }
+
+     
+  }
+
+  const Icon = ({ icon, account }: any) => {
+    return (
+        <TouchableOpacity onPress={() => handleSocialSignup(account)}  style={styles.iconBg}>
+          <Image source={icon} style={styles.icon} />
+        </TouchableOpacity>
+      );
+  };
+
+  const handleSocialSignup = async (provider: string) => {
+      await authClient.signIn.social({
+          provider,
+          callbackURL: "Home" // this will be converted to a deep link (eg. `myapp://dashboard`) on native
+      })   
+  }
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.background}>
@@ -75,7 +132,7 @@ function SigninScreen() {
         </View>
         <Typo style={styles.recoverTxt}>Recovery Possword</Typo>
         <AppButton
-          onPress={() => Auth.setUser('123')}
+          onPress={() => handleSubmit()}
           label={'Sign in'}
           style={{ backgroundColor: colors.primary, borderRadius: radius._12 }}
         />
@@ -85,9 +142,9 @@ function SigninScreen() {
           <View style={styles.line} />
         </View>
         <View style={[styles.orContinueRow, { width: '85%', gap: spacingX._15 }]}>
-          <Icon icon={require('../assets/google.png')} />
-          <Icon icon={require('../assets/apple.png')} />
-          <Icon icon={require('../assets/facebook.png')} />
+          <Icon account="google" icon={require('../assets/google.png')} />
+          <Icon account="apple" icon={require('../assets/apple.png')} />
+          <Icon account="facebook" icon={require('../assets/facebook.png')} />
         </View>
         <TouchableOpacity
           style={[styles.orContinueRow, { gap: spacingX._5, marginTop: '15%' }]}
@@ -99,14 +156,6 @@ function SigninScreen() {
     </SafeAreaView>
   );
 }
-
-const Icon = ({ icon }: { icon: any }) => {
-  return (
-    <TouchableOpacity style={styles.iconBg}>
-      <Image source={icon} style={styles.icon} />
-    </TouchableOpacity>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {

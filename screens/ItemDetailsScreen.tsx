@@ -1,4 +1,5 @@
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { NavigationProp, Route, Router, useNavigation } from '@react-navigation/native';
 import { border } from '@shopify/restyle';
 import AppButton from 'components/AppButton';
 import DetailsSelector from 'components/DetailsSelector';
@@ -9,17 +10,22 @@ import { radius, spacingX, spacingY } from 'config/spacing';
 import React, { useState } from 'react';
 import { View, StyleSheet, Platform, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import { normalizeX, normalizeY } from 'utils/normalize';
+import { ProductItem, RootStackParamList } from 'utils/types';
 const { height } = Dimensions.get('screen');
 
-function ItemDetailsScreen({ route, navigation }: any) {
+type MyScreenNavigationProp = NavigationProp<RootStackParamList>; // Example for a screen within the RootStack
+
+function ItemDetailsScreen({ route }: { route: any;}) {
   const iconSize = 18;
+  const navigation = useNavigation<MyScreenNavigationProp>();
   const item = route.params;
+  // console.log('ItemDetailsScreen route:', route);
   const [selectedColor, setSelectedColor] = useState(colors.dot1);
   const [selected, setSelected] = useState('Description');
   const allColors = [colors.dot1, colors.dot2, colors.dot3, colors.dot4, colors.gray];
   return (
     <View style={styles.container}>
-      <ItemImageSlider images={Array(5).fill(item.url)} />
+      <ItemImageSlider images={Array(5).fill(item?.url)} />
       <View style={styles.header}>
         <TouchableOpacity style={styles.iconBg} onPress={() => navigation.goBack()}>
           <MaterialIcons name="arrow-back-ios-new" size={iconSize} color="black" />
@@ -37,12 +43,12 @@ function ItemDetailsScreen({ route, navigation }: any) {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: '30%' }}>
           <Typo size={24} style={{ fontWeight: '600' }}>
-            {item.name}
+            {item?.name}
           </Typo>
           
           <View style={styles.ratingRow}>
             <Typo size={20} style={styles.price}>
-              {item.price}
+              {item?.price}
             </Typo>
             <View style={styles.ratingView}>
               <AntDesign name="star" size={12} color={colors.white} />
@@ -104,7 +110,7 @@ function ItemDetailsScreen({ route, navigation }: any) {
           </View>
           <AppButton
             style={{ width: '60%', marginTop: 0 }}
-            onPress={() => navigation.navigate('Cart')}
+            onPress={() => navigation.navigate('CartScreen')}
             label={'Add to Cart'}
           />
         </View>
@@ -116,14 +122,14 @@ function ItemDetailsScreen({ route, navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.white,    
   },
   header: {
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
     zIndex: 1,
-    marginTop: Platform.OS == 'ios' ? height * 0.06 : spacingY._10,
+    marginTop: Platform.OS == 'ios' ? height * 0.06 : spacingY._40,
     alignSelf: 'flex-end',
     flexDirection: 'row',
     paddingHorizontal: spacingX._20,

@@ -1,9 +1,9 @@
 {
   "expo": {
     "name": "Shoes App",
-    "slug": "ecommerce-app-ui",
+    "slug": "shoes-app",
     "version": "1.0.0",
-
+    "owner": "Ivan Alcuino",
     "web": {
       "favicon": "./assets/favicon.png"
     },
@@ -34,6 +34,7 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "scheme": "shoes-app"
   }
 }

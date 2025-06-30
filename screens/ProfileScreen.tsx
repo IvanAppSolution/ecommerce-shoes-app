@@ -6,6 +6,7 @@ import Typo from 'components/Typo';
 import colors from 'config/colors';
 import { radius, spacingX, spacingY } from 'config/spacing';
 import { BlurView } from 'expo-blur';
+import { authClient } from 'lib/auth-client';
 import React, { useCallback, useState } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
@@ -21,6 +22,16 @@ function ProfileScreen() {
       setKey((prevKey) => prevKey + 1);
     }, [])
   );
+
+  const handleSignOut = async () => {
+
+    try {
+      authClient.signOut();
+      Auth.setUser(null)
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  }
 
   const Row = ({ icon, title, iconColor, index, onPress } : {
     icon: React.ReactNode;
@@ -109,7 +120,7 @@ function ProfileScreen() {
             iconColor={'#d1d1d1'}
             icon={<MaterialCommunityIcons name="logout" size={24} color={colors.black} />}
             index={5}
-            onPress={() => Auth.setUser(null)}
+            onPress={() => handleSignOut()}
           />
         </View>
       </View>

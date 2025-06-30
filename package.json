@@ -1,5 +1,5 @@
 {
-  "name": "ecommerce-app-ui",
+  "name": "shoes-app",
   "version": "1.0.0",
   "scripts": {
     "android": "expo start --android",
@@ -10,15 +10,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@better-auth/expo": "^1.2.10",
     "@expo/vector-icons": "^14.0.0",
     "@miblanchard/react-native-slider": "^2.6.0",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/stack": "^6.3.17",
     "@shopify/restyle": "^2.4.2",
-    "expo": "^53.0.12",
+    "expo": "53.0.13",
     "expo-blur": "~14.1.5",
+    "expo-constants": "^17.1.6",
+    "expo-linking": "^7.1.5",
+    "expo-secure-store": "^14.2.3",
     "expo-status-bar": "~2.2.3",
+    "expo-web-browser": "^14.2.0",
     "react": "19.0.0",
     "react-native": "^0.79.4",
     "react-native-gesture-handler": "~2.24.0",
@@ -29,13 +34,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/react": "~19.0.10",
     "@typescript-eslint/eslint-plugin": "^7.7.0",
     "@typescript-eslint/parser": "^7.7.0",
     "eslint": "^8.57.0",
     "eslint-config-universe": "^12.0.1",
     "prettier": "^3.2.5",
-    "typescript": "~5.8.3",
-    "@types/react": "~19.0.10"
+    "typescript": "~5.8.3"
   },
   "eslintConfig": {
     "extends": "universe/native",
